@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node api/server.js",
     "dev": "nodemon api/server.js",
-    "open:mac": "open http://localhost:8000"
+    "open:mac": "open http://localhost:8000",
+    "jshint": "jshint -c .jshintrc --exclude-path .gitignore ."
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,9 @@
   "keywords": [
     "redis",
     "riot"
+  ],
+  "pre-commit": [
+    "jshint"
   ],
   "author": "",
   "license": "ISC",
@@ -28,6 +32,8 @@
     "redis": "^0.12.1"
   },
   "devDependencies": {
-    "nodemon": "^1.3.7"
+    "jshint": "^2.8.0",
+    "nodemon": "^1.3.7",
+    "pre-commit": "^1.0.10"
   }
 }
