@@ -7,8 +7,10 @@ var serverOptions = {
 
 server.connection(serverOptions);
 
-server.start(function () {
-    console.log('Server running at: ' + server.info.uri);
-});
+server.route(require('./routes.js'));
+
+// server.start(function () {
+//     console.log('Server running at: ' + server.info.uri);
+// });
 
 module.exports = server;

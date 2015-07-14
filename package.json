@@ -4,7 +4,7 @@
   "description": "Day of exploring!",
   "main": "api/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tape test/**/*.test.js",
     "start": "node api/server.js",
     "dev": "nodemon api/server.js",
     "open:mac": "open http://localhost:8000",
@@ -34,6 +34,7 @@
   "devDependencies": {
     "jshint": "^2.8.0",
     "nodemon": "^1.3.7",
-    "pre-commit": "^1.0.10"
+    "pre-commit": "^1.0.10",
+    "tape": "^4.0.0"
   }
 }
