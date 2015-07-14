@@ -1,4 +1,4 @@
-riot.tag('task-list', '<h1>Your Tasks</h1> <ul><li each="{t in opts.items}">{t.task}</li></ul>', function(opts) {
+riot.tag('task-list', '<h1>Your Tasks</h1> <task each="{task in opts.items}"></task>', function(opts) {
     this.on('mount', function(){
       console.log('Riot mount event fired');
       opts.loadCallback(this);
@@ -16,6 +16,6 @@ riot.tag('task-list', '<h1>Your Tasks</h1> <ul><li each="{t in opts.items}">{t.t
   
 });
 
-riot.tag('task', '<p>{task}</p>', function(opts) {
+riot.tag('task', '<div> <input type="checkbox" onclick="completionToggle({parent.task.taskID},{parent.task.complete})"></input> <p>{parent.task.task}</p> </div>', function(opts) {
 
 });

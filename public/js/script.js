@@ -36,6 +36,7 @@ taskButton.onclick = function () {
 };
 
 function completionToggle (ID, status) {
+    console.log(ID,status);
     socket.emit("completion-change", {
         ID:ID,
         status:status

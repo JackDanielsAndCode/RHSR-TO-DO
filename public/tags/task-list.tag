@@ -1,6 +1,6 @@
 <task-list>
   <h1>Your Tasks</h1>
-  <ul><li each="{t in opts.items}">{t.task}</li></ul>
+  <task each="{task in opts.items}"></task>
   <script>
     this.on('mount', function(){
       console.log('Riot mount event fired');
