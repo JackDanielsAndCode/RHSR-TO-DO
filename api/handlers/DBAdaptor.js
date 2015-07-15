@@ -3,6 +3,11 @@ var redis =   require('redis');
 var redisURL = url.parse(process.env.REDISCLOUD_URL);
 var client = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
 client.auth(redisURL.auth.split(":")[1]);
+var pub = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
+pub.auth(redisURL.auth.split(":")[1]);
+var sub = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
+sub.auth(redisURL.auth.split(":")[1]);
+
 
 function addToOrderedSet (setName, score, element, callback) {
     client.zadd(setName, score, element, callback);
@@ -112,14 +117,11 @@ function readAll(callback) {
 
 }
 
-var sub = redis.createClient();
-var pub = redis.createClient();
-
 module.exports = {
     create: create,
     readAll: readAll,
     updateByTaskID: updateByTaskID,
     deleteByTaskID: deleteByTaskID,
-    pub: redis.createClient(),
-    sub: redis.createClient()
+    pub: pub,
+    sub: sub
 };
