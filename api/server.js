@@ -30,7 +30,7 @@ var sub= DB.sub;
 pub.on("ready", function () {
     sub.on("ready", function () {
         sub.on("message", function (channel, message) {
-
+            console.log('message', message);
             if (channel === "task-room") {
                 io.emit("new-task", JSON.parse(message));
             }

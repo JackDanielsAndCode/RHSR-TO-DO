@@ -49,7 +49,6 @@
       }
 
       editing (e) {
-          console.log("hi",e);
           if (e.keyCode===13) {
               this.toggleEditable();
           } else {
