@@ -35,12 +35,16 @@ pub.on("ready", function () {
                 io.emit("new-task", JSON.parse(message));
             }
 
-            if (channel === "completion-update-room") {
-                io.emit("completion-update", message);
+            if (channel === "update-room") {
+                io.emit("task-update", JSON.parse(message));
+            }
+
+            if (channel === "delete-room") {
+                io.emit("task-deletion", message);
             }
         });
 
-        sub.subscribe("task-room","completion-update-room");
+        sub.subscribe("task-room", "update-room", "delete-room");
         var io = require('socket.io')(server.listener);
         io.on('connection', function(socket){
             console.log('User Connected');
@@ -53,9 +57,15 @@ pub.on("ready", function () {
                     }
                 });
             });
-            socket.on("completion-change", function(updateObj) {
-                DB.toggleCompletion(updateObj.ID,updateObj.status,function(result){
-                        pub.publish("completion-update-room", updateObj.ID);
+            socket.on("update-task", function (updateObj) {
+                DB.updateByTaskID(updateObj.taskID,updateObj,function(result){
+                        pub.publish("update-room", JSON.stringify(updateObj));
+                });
+            });
+            socket.on("delete-task", function (taskID) {
+                DB.deleteByTaskID(taskID, function(result){
+                    // if result good?
+                    pub.publish("delete-room",taskID);
                 });
             });
         });

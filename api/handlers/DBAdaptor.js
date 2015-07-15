@@ -22,8 +22,9 @@ function sortByTime (taskObj) {
     return taskObj.time;
 }
 
-function insertIntoPrimaryList (obj, callback) {
-    insertIntoList("primary-list", sortByTime, obj, function (err, result) {
+function insertIntoList (list, scoreFunction, obj, callback) {
+    var score = scoreFunction(obj);
+    addToOrderedSet(list, score, obj.taskID, function (err, result) {
 
         if (err) {
             console.log(err);
@@ -36,8 +37,6 @@ function insertIntoPrimaryList (obj, callback) {
     });
 }
 
-///change!!
-
 function create (taskObj, callback) {
 
     client.select(0, function() {
@@ -47,7 +46,7 @@ function create (taskObj, callback) {
               console.log(err);
           } else {
               taskObj.time = new Date().getTime();
-              taskObj.complete = false;
+              taskObj.complete = "";
               taskObj.taskID = taskID;
 
               addToHash(taskID, taskObj, function (err, result) {
@@ -55,7 +54,7 @@ function create (taskObj, callback) {
                   if (err) {
                       console.log(err);
                   } else {
-                      insertIntoPrimaryList(taskObj, callback);
+                      insertIntoList("primary-list", sortByTime, taskObj, callback); //possible to add to multiple lists with different scoring systems
                   }
               });
           }
@@ -63,25 +62,27 @@ function create (taskObj, callback) {
     });
 }
 
-function toggleCompletion (taskID, currentStatus, callback) {
+function updateByTaskID (taskID, changeObj, callback) {
 
     client.select(0, function() {
-      client.hset(taskID, "complete", !currentStatus, function(err, result) {
+      client.hmset(taskID, changeObj, function(err, result) {
 
           if(!err) {
-              callback(result);
+              callback(result); //if successful will be 0
           }
       });
     });
 }
 
-function getMessageByID (taskID, callback) {
-    client.hgetall(taskID, function (err, result) {
-        if (err) {
-            console.log(err);
-        } else {
-            callback(result);
-        }
+function deleteByTaskID (taskID, callback) {
+
+    client.select(0, function() {
+      client.zrem("primary-list", taskID, function(err, result) {
+
+          if(!err) {
+              callback(result); //if successful will be 0
+          }
+      });
     });
 }
 
@@ -107,14 +108,14 @@ function readAll(callback) {
 
 }
 
-var redis = require("redis"),
-    sub = redis.createClient(), msg_count = 0,
-    pub = redis.createClient();
+var sub = redis.createClient();
+var pub = redis.createClient();
 
 module.exports = {
     create: create,
     readAll: readAll,
-    toggleCompletion: toggleCompletion,
+    updateByTaskID: updateByTaskID,
+    deleteByTaskID: deleteByTaskID,
     pub: redis.createClient(),
     sub: redis.createClient()
 };
