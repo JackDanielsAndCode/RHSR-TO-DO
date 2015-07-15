@@ -1,7 +1,8 @@
 var url      = require('url');
 var redis    = require('redis');
-var dbUrl    = require('../../config.json') ? require('../../config.json').dbUrl : "redis://localhost:6379"
-var redisURL = url.parse(dbUrl);
+var config   = require('../../config.json');
+var redisURL = config ? url.parse(config.redisUrl) : url.parse("redis://localhost:6379"); //start you local redis server and
+var dbNumber = config ? config.dbNumber : 0;
 var client   = createDbClient();
 var pub      = createDbClient();
 var sub      = createDbClient();
@@ -52,7 +53,7 @@ function insertIntoList (list, scoreFunction, obj, callback) {
 
 function create (taskObj, callback) {
 
-    client.select(0, function() {
+    client.select(dbNumber, function() {
       increment("task-count", function (err, taskID) {
 
           if (err) {
@@ -78,7 +79,7 @@ function create (taskObj, callback) {
 
 function updateByTaskID (taskID, changeObj, callback) {
 
-    client.select(0, function() {
+    client.select(dbNumber, function() {
       client.hmset(taskID, changeObj, function(err, result) {
 
           if(!err) {
@@ -101,7 +102,7 @@ function deleteByTaskID (taskID, callback) {
 }
 
 function readAll(callback) {
-    client.select(0, function() {
+    client.select(dbNumber, function() {
         client.zrange("primary-list",0,-1, function(err, data){
             if (err) {
                 console.log(err);
