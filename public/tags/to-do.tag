@@ -39,19 +39,19 @@
         });
 
         socket.on("task-deletion", function (taskID)  {
-            console.log(todo.taskItems);
+            console.log(taskID);
             var i;
             var taskCount= todo.taskItems.length;
+            console.log(taskCount);
 
             for (i=0; i<taskCount; i++) {
-                if ( todo.taskItems[i].taskID === taskID ) {
-                    break;
+                if ( todo.taskItems[i].taskID === Number(taskID) ) {
+                    todo.taskItems.splice(i,1);
+                    return todo.update();
                 }
             }
 
-            todo.taskItems.splice(i,1);
-            console.log(todo.taskItems)
-            todo.update();
+
 
         });
 

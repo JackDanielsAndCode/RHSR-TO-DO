@@ -22,7 +22,7 @@ riot.tag('task-list', '<task each="{el in opts.items}" item="{el}" ></task>', fu
 
 });
 
-riot.tag('task', '<div> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }">{opts.item.task} <button onclick="{ deleteTask }" >X</button> </label> </div>', function(opts) {
+riot.tag('task', '<div class="task-flash"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p class="{hidden:editable, strike-through:opts.item.complete}">{opts.item.task}</p> <input name="taskEdit" type="text" class="{hidden:!editable}" value="{opts.item.task}"> <button onclick="{ toggleEditable }" class="{hidden:editable}" >edit</button> <button onclick="{ submitEdit }" class="{hidden:!editable}" >submit</button> <button onclick="{ deleteTask }" >X</button> </label> </div>', function(opts) {
 
       this.toggle = function() {
         var taskObj = {
@@ -34,11 +34,26 @@ riot.tag('task', '<div> <label> <input type="checkbox" __checked="{ opts.item.co
       }.bind(this);
 
       this.on("update", function(){
-        console.log("updated:",opts.item.taskID);
+        console.log("updated:");
       })
 
+        this.editable=false;
+
+      this.toggleEditable = function() {
+        this.editable = !this.editable;
+      }.bind(this);
+
       this.deleteTask = function() {
-        this.parent.parent.parent.socket.emit("delete-task", opts.item.taskID);
+          this.parent.parent.parent.socket.emit("delete-task", opts.item.taskID);
+      }.bind(this);
+
+      this.submitEdit = function() {
+          this.toggleEditable();
+          var taskObj = {
+              taskID: opts.item.taskID
+          };
+          taskObj.task = this.taskEdit.value;
+          this.parent.parent.parent.socket.emit("update-task", taskObj);
       }.bind(this);
 
     
@@ -80,19 +95,19 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
         });
 
         socket.on("task-deletion", function (taskID)  {
-            console.log(todo.taskItems);
+            console.log(taskID);
             var i;
             var taskCount= todo.taskItems.length;
+            console.log(taskCount);
 
             for (i=0; i<taskCount; i++) {
-                if ( todo.taskItems[i].taskID === taskID ) {
-                    break;
+                if ( todo.taskItems[i].taskID === Number(taskID) ) {
+                    todo.taskItems.splice(i,1);
+                    return todo.update();
                 }
             }
 
-            todo.taskItems.splice(i,1);
-            console.log(todo.taskItems)
-            todo.update();
+
 
         });
 

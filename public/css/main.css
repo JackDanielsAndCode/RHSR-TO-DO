@@ -1,0 +1,33 @@
+body {
+  font-family: 'helvetica', sans-serif;
+  font-size: 18px;
+  border: 0;
+
+}
+
+.task-flash {
+    -webkit-animation: flash 1s;
+}
+
+.strike-through {
+    text-decoration: line-through;
+}
+
+@-webkit-keyframes flash {
+    0% {background-color: white;}
+    50% {background-color: green;}
+    100% {background-color: white;}
+}
+
+.hidden {
+    display: none;
+}
+
+p {
+    margin:0;
+    display:inline-block;
+}
+
+input {
+    font-size: 18px;
+}
