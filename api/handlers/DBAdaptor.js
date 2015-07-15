@@ -1,12 +1,17 @@
-var url = require('url');
-var redis =   require('redis');
-var redisURL = url.parse(process.env.REDISCLOUD_URL);
-var client = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
-client.auth(redisURL.auth.split(":")[1]);
-var pub = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
-pub.auth(redisURL.auth.split(":")[1]);
-var sub = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
-sub.auth(redisURL.auth.split(":")[1]);
+var url      = require('url');
+var redis    = require('redis');
+var dbUrl    = require('../../config.json') ? require('../../config.json').dbUrl : "redis://localhost:6379"
+var redisURL = url.parse(dbUrl);
+var client   = createDbClient();
+var pub      = createDbClient();
+var sub      = createDbClient();
+
+
+function createDbClient() {
+    var DB = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
+    if (redisURL.auth) { DB.auth(redisURL.auth.split(":")[1]); }
+    return DB;
+}
 
 
 function addToOrderedSet (setName, score, element, callback) {
