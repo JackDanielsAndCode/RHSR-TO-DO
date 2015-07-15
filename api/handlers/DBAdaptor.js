@@ -45,7 +45,8 @@ function create (taskObj, callback) {
           if (err) {
               console.log(err);
           } else {
-              taskObj.time = new Date().getTime();
+              var createTime = new Date().getTime();
+              taskObj.time = createTime;
               taskObj.complete = "";
               taskObj.taskID = taskID;
 

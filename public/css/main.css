@@ -28,6 +28,10 @@ p {
     display:inline-block;
 }
 
-input {
+task input {
     font-size: 18px;
+}
+
+delete-check p {
+    font-size:12px
 }
