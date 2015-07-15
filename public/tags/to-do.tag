@@ -27,7 +27,6 @@
             todo.taskItems.map( function(e) {
 
                 if (e.taskID === updateObj.taskID ) {
-                    console.log(e,updateObj,"change");
                     for (var key in updateObj) {
                         e[key]=updateObj[key];
                     }
@@ -39,13 +38,11 @@
         });
 
         socket.on("task-deletion", function (taskID)  {
-            console.log(taskID);
             var i;
             var taskCount= todo.taskItems.length;
-            console.log(taskCount);
 
             for (i=0; i<taskCount; i++) {
-                if ( todo.taskItems[i].taskID === Number(taskID) ) {
+                if ( todo.taskItems[i].taskID.toString() === taskID ) {
                     todo.taskItems.splice(i,1);
                     return todo.update();
                 }
