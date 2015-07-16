@@ -2,7 +2,10 @@ var Hapi    = require('hapi');
 var server  = new Hapi.Server();
 var handlebars = require('handlebars');
 var DB = require('./handlers/DBAdaptor');
-
+var socketio = require('socket.io');
+var io;
+var pub = DB.pub;
+var sub= DB.sub;
 
 var serverOptions = {
   port: process.env.PORT || 8000,
@@ -20,59 +23,67 @@ server.views({
 
 server.route(require('./routes.js'));
 
-server.start(function () {
-    console.log('Server running at: ' + server.info.uri);
+function init(listener, callback){
+  io = socketio.listen(listener);
+  pub.on("ready", function () {
+      sub.on("ready", function () {
+          sub.subscribe("task-room", "update-room", "delete-room");
+          sub.subscribe("task-room");
+            sub.subscribe("task-room");
+              sub.subscribe("task-room");
+                sub.subscribe("task-room");
+          io.on('connection', taskHandler);
+          setTimeout(function(){
+            callback();
+          }, 300);
+      });
+  });
+}
+
+function taskHandler(socket){
+  socket.on("new-task", function(data) {
+      DB.create(data, function(result){
+
+          if (result.success) {
+              console.log('pub is publishing');
+              pub.publish("task-room", JSON.stringify(result.taskObj));
+          }
+      });
+  });
+  socket.on("update-task", function (updateObj) {
+      DB.updateByTaskID(updateObj.taskID,updateObj,function(result){
+              pub.publish("update-room", JSON.stringify(updateObj));
+      });
+  });
+  socket.on("delete-task", function (taskID) {
+      DB.deleteByTaskID(taskID, function(result){
+          // if result good?
+          pub.publish("delete-room",taskID);
+      });
+  });
+  sub.on("message", function (channel, message) {
+      console.log(channel,message, new Date().getTime(), "look here");
+
+      if (channel === "task-room") {
+          console.log('socket is emitting a new task');
+          io.emit("new-task", JSON.parse(message));
+      }
+
+      if (channel === "update-room") {
+          io.emit("task-update", JSON.parse(message));
+      }
+
+      if (channel === "delete-room") {
+          io.emit("task-deletion", message);
+      }
+  });
+}
+
+server.start(function(){
+  init(server.listener, function(){
+      console.log('server running');
+  });
 });
-
-var pub = DB.pub;
-var sub= DB.sub;
-
-pub.on("ready", function () {
-    sub.on("ready", function () {
-        sub.on("message", function (channel, message) {
-            console.log('message', message);
-            if (channel === "task-room") {
-                io.emit("new-task", JSON.parse(message));
-            }
-
-            if (channel === "update-room") {
-                io.emit("task-update", JSON.parse(message));
-            }
-
-            if (channel === "delete-room") {
-                io.emit("task-deletion", message);
-            }
-        });
-
-        sub.subscribe("task-room", "update-room", "delete-room");
-        var io = require('socket.io')(server.listener);
-        io.on('connection', function(socket){
-            console.log('User Connected');
-            socket.on("new-task", function(data) {
-                console.log("data", data);
-                DB.create(data, function(result){
-
-                    if (result.success) {
-                        pub.publish("task-room", JSON.stringify(result.taskObj));
-                    }
-                });
-            });
-            socket.on("update-task", function (updateObj) {
-                DB.updateByTaskID(updateObj.taskID,updateObj,function(result){
-                        pub.publish("update-room", JSON.stringify(updateObj));
-                });
-            });
-            socket.on("delete-task", function (taskID) {
-                DB.deleteByTaskID(taskID, function(result){
-                    // if result good?
-                    pub.publish("delete-room",taskID);
-                });
-            });
-        });
-    });
-});
-
-
 
 
 

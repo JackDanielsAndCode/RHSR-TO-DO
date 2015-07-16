@@ -128,6 +128,7 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
         });
 
         socket.on("new-task", function(taskObj) {
+            console.log('new-task');
             todo.taskItems.push(taskObj);
             todo.update();
         });

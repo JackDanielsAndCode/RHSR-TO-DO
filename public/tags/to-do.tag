@@ -9,7 +9,6 @@
         var todo = this;
 
         this.on('mount', function(){
-          console.log('Riot mount event fired');
           var xhr = new XMLHttpRequest();
           xhr.open('GET', '/getTasks');
           xhr.send();

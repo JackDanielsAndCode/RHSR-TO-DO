@@ -14,7 +14,6 @@
 
     <script>
     var date= new Date(Number(opts.item.time));
-    console.log(opts.item.time);
     this.deleteMessage="Are you sure you want to delete this task created on: " + date;
 
       toggle () {
@@ -22,7 +21,6 @@
             taskID: opts.item.taskID
         };
         taskObj.complete = opts.item.complete === "" ? new Date().getTime() : "";
-        console.log(taskObj);
         this.parent.parent.parent.socket.emit("update-task", taskObj);
       }
 
