@@ -6,6 +6,8 @@ var socketio = require('socket.io');
 var io;
 var pub = DB.pub;
 var sub= DB.sub;
+console.log(sub);
+
 
 var serverOptions = {
   port: process.env.PORT || 8000,
@@ -27,7 +29,9 @@ function init(listener, callback){
   io = socketio.listen(listener);
   pub.on("ready", function () {
       sub.on("ready", function () {
+          console.log(this);
           sub.subscribe("task-room", "update-room", "delete-room");
+          console.log(this);
           io.on('connection', taskHandler);
           setTimeout(function(){
             callback();
