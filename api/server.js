@@ -28,10 +28,6 @@ function init(listener, callback){
   pub.on("ready", function () {
       sub.on("ready", function () {
           sub.subscribe("task-room", "update-room", "delete-room");
-          sub.subscribe("task-room");
-            sub.subscribe("task-room");
-              sub.subscribe("task-room");
-                sub.subscribe("task-room");
           io.on('connection', taskHandler);
           setTimeout(function(){
             callback();
@@ -43,9 +39,10 @@ function init(listener, callback){
 function taskHandler(socket){
   socket.on("new-task", function(data) {
       DB.create(data, function(result){
+          console.log('pub is publishing');
 
           if (result.success) {
-              console.log('pub is publishing');
+
               pub.publish("task-room", JSON.stringify(result.taskObj));
           }
       });
@@ -62,6 +59,7 @@ function taskHandler(socket){
       });
   });
   sub.on("message", function (channel, message) {
+      console.log(this);
       console.log(channel,message, new Date().getTime(), "look here");
 
       if (channel === "task-room") {

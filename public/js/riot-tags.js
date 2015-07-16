@@ -28,7 +28,6 @@ riot.tag('task-list', '<task each="{el in opts.items}" item="{el}" ></task>', fu
 
 riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p class="{hidden:editable, strike-through:opts.item.complete}">{opts.item.task}</p> <input name="taskEdit" onchange="{ editing }" onkeyup="{ editing }" type="text" class="{hidden:!editable}" value="{opts.item.task}"> <button onclick="{ toggleEditable }" class="{hidden:editable}" >edit</button> <button onclick="{ toggleEditable }" class="{hidden:!editable}" >done</button> <button onclick="{ toggleDeletable }" class="{hidden:deletable}" >X</button> <delete-check class="{hidden:!deletable}" no="{ toggleDeletable }" yes="{ deleteTask }" message="{ deleteMessage }" > </delete-check> </label> </div>', function(opts) {
     var date= new Date(Number(opts.item.time));
-    console.log(opts.item.time);
     this.deleteMessage="Are you sure you want to delete this task created on: " + date;
 
       this.toggle = function() {
@@ -36,7 +35,6 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
             taskID: opts.item.taskID
         };
         taskObj.complete = opts.item.complete === "" ? new Date().getTime() : "";
-        console.log(taskObj);
         this.parent.parent.parent.socket.emit("update-task", taskObj);
       }.bind(this);
 
@@ -84,7 +82,6 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
         var todo = this;
 
         this.on('mount', function(){
-          console.log('Riot mount event fired');
           var xhr = new XMLHttpRequest();
           xhr.open('GET', '/getTasks');
           xhr.send();
@@ -128,7 +125,6 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
         });
 
         socket.on("new-task", function(taskObj) {
-            console.log('new-task');
             todo.taskItems.push(taskObj);
             todo.update();
         });

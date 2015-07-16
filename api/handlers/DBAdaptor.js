@@ -1,6 +1,6 @@
 var url      = require('url');
 var redis    = require('redis');
-var config   = require('../../config.json');
+var config; //   = require('../../config.json');
 var redisURL = config ? url.parse(config.redisUrl) : url.parse("redis://localhost:6379"); //start you local redis server and
 var dbNumber = config ? config.dbNumber : 0;
 var client   = createDbClient();
