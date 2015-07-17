@@ -2,7 +2,7 @@
 
 ## What is this?
 
-A to do app built with Redis, Hapi.js, Riot.js and Socket.io.
+A to do app built with Redis, Hapi.js, Socket.io and Riot.js.
 
 See it live. https://realtimetodo.herokuapp.com
 

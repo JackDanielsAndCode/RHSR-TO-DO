@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jrans/redis-riot-reading.git"
+    "url": "git+https://github.com/jrans/RHSR-TO-DO.git"
   },
   "keywords": [
     "redis",
@@ -27,9 +27,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jrans/redis-riot-reading/issues"
+    "url": "https://github.com/jrans/RHSR-TO-DO/issues"
   },
-  "homepage": "https://github.com/jrans/redis-riot-reading#readme",
+  "homepage": "https://github.com/jrans/RHSR-TO-DO#readme",
   "dependencies": {
     "handlebars": "^3.0.3",
     "hapi": "^8.8.0",
