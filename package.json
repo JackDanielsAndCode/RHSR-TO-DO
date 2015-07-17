@@ -1,0 +1,42 @@
+{
+  "name": "redis-riot-reading",
+  "version": "1.0.0",
+  "description": "Day of exploring!",
+  "main": "api/server.js",
+  "scripts": {
+    "test": "tape test/**/*.test.js",
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "open:mac": "open http://localhost:8000",
+    "jshint": "jshint -c .jshintrc --exclude-path .gitignore ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrans/redis-riot-reading.git"
+  },
+  "keywords": [
+    "redis",
+    "riot"
+  ],
+  "pre-commit": [
+    "jshint"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jrans/redis-riot-reading/issues"
+  },
+  "homepage": "https://github.com/jrans/redis-riot-reading#readme",
+  "dependencies": {
+    "handlebars": "^3.0.3",
+    "hapi": "^8.8.0",
+    "redis": "^0.12.1",
+    "socket.io": "^1.3.5"
+  },
+  "devDependencies": {
+    "jshint": "^2.8.0",
+    "nodemon": "^1.3.7",
+    "pre-commit": "^1.0.10",
+    "tape": "^4.0.0"
+  }
+}
