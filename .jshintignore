@@ -3,5 +3,5 @@ node_modules
 config.json
 *.log
 dump.rdb
-public/bower_components
+public/lib/riot.min.js
 public/js/riot-tags.js
