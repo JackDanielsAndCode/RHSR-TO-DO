@@ -6,9 +6,12 @@
   "scripts": {
     "test": "tape test/**/*.test.js",
     "start": "node api/server.js",
-    "dev": "nodemon api/server.js",
+    "watch:riot": "node_modules/.bin/riot -w ./public/tags ./public/js/riot-tags.js",
+    "watch": "npm run watch:riot",
+    "redis:local": "redis-server",
+    "dev": "nodemon api/server.js & npm run watch",
     "open:mac": "open http://localhost:8000",
-    "jshint": "jshint -c .jshintrc --exclude-path .gitignore ."
+    "jshint": "jshint -c .jshintrc --exclude-path .jshintignore . "
   },
   "repository": {
     "type": "git",
@@ -30,7 +33,9 @@
   "dependencies": {
     "handlebars": "^3.0.3",
     "hapi": "^8.8.0",
+    "hiredis": "^0.4.0",
     "redis": "^0.12.1",
+    "riot": "^2.2.2",
     "socket.io": "^1.3.5"
   },
   "devDependencies": {

@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+config.json
+*.log
+dump.rdb
+public/bower_components
+public/js/riot-tags.js
