@@ -15,7 +15,7 @@
                 var taskObj = {
                     task: this.text
                 }
-                this.parent.socket.emit("new-task", taskObj);
+                this.parent.socket.emit("create-task", taskObj);
                 this.text = this.input.value = ''
             }
         }

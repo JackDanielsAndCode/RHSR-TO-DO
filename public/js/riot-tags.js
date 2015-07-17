@@ -14,7 +14,7 @@ riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ e
                 var taskObj = {
                     task: this.text
                 }
-                this.parent.socket.emit("new-task", taskObj);
+                this.parent.socket.emit("create-task", taskObj);
                 this.text = this.input.value = ''
             }
         }.bind(this);
@@ -94,7 +94,8 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
         });
 
 
-        socket.on("task-update", function (updateObj) {
+        socket.on("task-updated", function (unparsedObj) {
+            var updateObj=JSON.parse(unparsedObj);
 
             todo.taskItems.map( function(e) {
 
@@ -105,11 +106,10 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
                 }
                 return e;
             })
-
             todo.update();
         });
 
-        socket.on("task-deletion", function (taskID)  {
+        socket.on("task-deleted", function (taskID)  {
             var i;
             var taskCount= todo.taskItems.length;
 
@@ -119,12 +119,10 @@ riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{
                     return todo.update();
                 }
             }
-
-
-
         });
 
-        socket.on("new-task", function(taskObj) {
+        socket.on("task-created", function(unparsedObj) {
+            var taskObj=JSON.parse(unparsedObj);
             todo.taskItems.push(taskObj);
             todo.update();
         });

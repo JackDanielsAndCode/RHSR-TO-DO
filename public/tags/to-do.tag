@@ -21,7 +21,8 @@
         });
 
 
-        socket.on("task-update", function (updateObj) {
+        socket.on("task-updated", function (unparsedObj) {
+            var updateObj=JSON.parse(unparsedObj);
 
             todo.taskItems.map( function(e) {
 
@@ -32,11 +33,10 @@
                 }
                 return e;
             })
-
             todo.update();
         });
 
-        socket.on("task-deletion", function (taskID)  {
+        socket.on("task-deleted", function (taskID)  {
             var i;
             var taskCount= todo.taskItems.length;
 
@@ -46,12 +46,10 @@
                     return todo.update();
                 }
             }
-
-
-
         });
 
-        socket.on("new-task", function(taskObj) {
+        socket.on("task-created", function(unparsedObj) {
+            var taskObj=JSON.parse(unparsedObj);
             todo.taskItems.push(taskObj);
             todo.update();
         });

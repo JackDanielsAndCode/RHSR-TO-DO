@@ -28,20 +28,9 @@ function init(listener, callback){
     io = socketio.listen(listener);
     pub.on("ready", function () {
         sub.on("ready", function () {
-            sub.subscribe("task-room", "update-room", "delete-room");
+            sub.subscribe("task-created", "task-updated", "task-deleted");
             sub.on("message", function (channel, message) {
-
-                if (channel === "task-room") {
-                    io.emit("new-task", JSON.parse(message));
-                }
-
-                if (channel === "update-room") {
-                    io.emit("task-update", JSON.parse(message));
-                }
-
-                if (channel === "delete-room") {
-                    io.emit("task-deletion", message);
-                }
+                io.emit(channel, message);
             });
             io.on('connection', taskHandler);
             callback();
@@ -50,25 +39,26 @@ function init(listener, callback){
 }
 
 function taskHandler(socket){
-    console.log("user connected");
+    console.log("client connected");
 
-    socket.on("new-task", function(data) {
+    socket.on("create-task", function(data) {
+        console.log("hi", data);
         DB.create(data, function(result){
 
             if (result.success) {
-                pub.publish("task-room", JSON.stringify(result.taskObj));
+                pub.publish("task-created", JSON.stringify(result.taskObj));
             }
         });
     });
     socket.on("update-task", function (updateObj) {
         DB.updateByTaskID(updateObj.taskID,updateObj,function(result){
-            pub.publish("update-room", JSON.stringify(updateObj));
+            pub.publish("task-updated", JSON.stringify(updateObj));
         });
     });
     socket.on("delete-task", function (taskID) {
         DB.deleteByTaskID(taskID, function(result){
             // if result good?
-            pub.publish("delete-room",taskID);
+            pub.publish("task-deleted",taskID);
         });
     });
 }
