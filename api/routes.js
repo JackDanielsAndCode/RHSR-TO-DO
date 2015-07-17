@@ -1,3 +1,4 @@
+ var init = require("./init.js");
  var routes = [
     {
       method: 'GET',
@@ -12,7 +13,7 @@
       method: 'GET',
       path: "/getTasks",
       handler: function (request, reply) {
-          require("./handlers/DBAdaptor").readAll(function(result){
+          init.loadExistingHandler(function(result){
               reply(result);
           });
       }
