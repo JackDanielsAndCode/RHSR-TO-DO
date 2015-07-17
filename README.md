@@ -6,6 +6,8 @@ A to do app built with Redis, Hapi.js, Riot.js and Socket.io.
 
 See it live. https://realtimetodo.herokuapp.com
 
+CSS to come, also please suggest more features!
+
 
 ### TODO Functionality
 
