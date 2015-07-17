@@ -19,10 +19,6 @@ body {
     100% {background-color: white;}
 }
 
-.hidden {
-    display: none;
-}
-
 p {
     margin:0;
     display:inline-block;
@@ -34,4 +30,8 @@ task input {
 
 delete-check p {
     font-size:12px
+}
+
+editing {
+    color:red
 }
