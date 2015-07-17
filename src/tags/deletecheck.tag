@@ -4,4 +4,5 @@
         <button onclick={ opts.yes }>yes</button>
         <button onclick={ opts.no } >no</button>
     <div>
+
 </delete-check>
