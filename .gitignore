@@ -3,4 +3,3 @@ node_modules
 config.json
 *.log
 dump.rdb
-public/bower_components
