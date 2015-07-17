@@ -1,5 +1,6 @@
 riot.tag('delete-check', '<div> <p>{opts.message}<p> <button onclick="{ opts.yes }">yes</button> <button onclick="{ opts.no }" >no</button> <div>', function(opts) {
 
+
 });
 
 riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ edit }"> <button __disabled="{ !text }">Add</button> </form>', function(opts) {
@@ -14,7 +15,7 @@ riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ e
                 var taskObj = {
                     task: this.text
                 }
-                this.parent.socket.emit("create-task", taskObj);
+                opts.socket.emit("create-task", taskObj);
                 this.text = this.input.value = ''
             }
         }.bind(this);
@@ -22,12 +23,14 @@ riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ e
     
 });
 
-riot.tag('task-list', '<task each="{el in opts.items}" item="{el}" ></task>', function(opts) {
-
+riot.tag('task-list', '<task each="{el in opts.items}" item="{ el }" ></task>', function(opts) {
+      this.socket = opts.socket;
+  
 });
 
-riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p class="{hidden:editable, strike-through:opts.item.complete}">{opts.item.task}</p> <input name="taskEdit" onchange="{ editing }" onkeyup="{ editing }" type="text" class="{hidden:!editable}" value="{opts.item.task}"> <button onclick="{ toggleEditable }" class="{hidden:editable}" >edit</button> <button onclick="{ toggleEditable }" class="{hidden:!editable}" >done</button> <button onclick="{ toggleDeletable }" class="{hidden:deletable}" >X</button> <delete-check class="{hidden:!deletable}" no="{ toggleDeletable }" yes="{ deleteTask }" message="{ deleteMessage }" > </delete-check> </label> </div>', function(opts) {
-    var date= new Date(Number(opts.item.time));
+riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p class="{hidden:editable, strike-through:opts.item.complete}">{opts.item.task}</p> <input name="taskEdit" onchange="{ editing }" onkeyup="{ editing }" type="text" class="{hidden:!editable}" value="{opts.item.task}"> <button onclick="{ toggleEditable }" class="{hidden:editable}" >edit</button> <button onclick="{ toggleEditable }" class="{hidden:!editable}" >done</button> <button onclick="{ toggleDeletable }" class="{hidden:deletable}" >X</button> <div class="{hidden:!deletable}"> <p>{ deleteMessage }<p> <button onclick="{ deleteTask }">yes</button> <button onclick="{ toggleDeletable }" >no</button> <div> </label> </div>', function(opts) {
+    var socket = this.parent.socket;
+    var date = new Date(Number(opts.item.time));
     this.deleteMessage="Are you sure you want to delete this task created on: " + date;
 
       this.toggle = function() {
@@ -35,13 +38,8 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
             taskID: opts.item.taskID
         };
         taskObj.complete = opts.item.complete === "" ? new Date().getTime() : "";
-        this.parent.parent.parent.socket.emit("update-task", taskObj);
+        socket.emit("update-task", taskObj);
       }.bind(this);
-
-      this.on("update", function(){
-        console.log("updated:");
-      })
-
 
       this.deletable=false;
 
@@ -56,7 +54,7 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
       }.bind(this);
 
       this.deleteTask = function() {
-          this.parent.parent.parent.socket.emit("delete-task", opts.item.taskID);
+          socket.emit("delete-task", opts.item.taskID);
           this.toggleDeletable();
       }.bind(this);
 
@@ -68,7 +66,7 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
                   taskID: opts.item.taskID,
                   task: e.target.value
               };
-              this.parent.parent.parent.socket.emit("update-task", taskObj);
+              socket.emit("update-task", taskObj);
           }
       }.bind(this);
 
@@ -76,7 +74,7 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
     
 });
 
-riot.tag('to-do', '<new-task></new-task> <h1>Your Tasks</h1> <task-list items="{ taskItems }" ></task-list>', function(opts) {
+riot.tag('to-do', '<new-task socket="{ socket }"></new-task> <h1>Your Tasks</h1> <task-list items="{ taskItems }" socket="{ socket }"></task-list>', function(opts) {
         this.taskItems = [];
         var socket = this.socket = io();
         var todo = this;

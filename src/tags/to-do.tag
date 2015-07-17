@@ -1,7 +1,7 @@
 <to-do>
-    <new-task></new-task>
+    <new-task socket={ socket }></new-task>
     <h1>Your Tasks</h1>
-    <task-list items={ taskItems } ></task-list>
+    <task-list items={ taskItems } socket={ socket }></task-list>
 
     <script>
         this.taskItems = [];
