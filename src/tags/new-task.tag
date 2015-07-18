@@ -4,6 +4,9 @@
         <button disabled={ !text }>Add</button>
     </form>
     <script>
+
+        this.name=opts.name;
+        console.log(this.name);
         this.disabled = true
 
         edit(e) {
@@ -13,7 +16,9 @@
         add(e) {
             if (this.text) {
                 var taskObj = {
-                    task: this.text
+                    task: this.text,
+                    createdBy: this.name,
+                    lasteditedBy: this.name
                 }
                 opts.socket.emit("create-task", taskObj);
                 this.text = this.input.value = ''
