@@ -11,7 +11,7 @@
     },
     {
         method: 'GET',
-        path: "/getTasks",
+        path: "/getTasksAndUsers",
         handler: function (request, reply) {
             init.loadExistingHandler(function (result) {
                 reply(result);

@@ -23,6 +23,9 @@ function create (client, taskObj, callback) {
               taskObj.time = createTime;
               taskObj.complete = "";
               taskObj.taskID = taskID;
+              taskObj.lastedited = createTime;
+              taskObj.completedBy = "";
+              taskObj.completedOn = "";
 
               client.hmset(taskID, taskObj, function (err, result) {
 

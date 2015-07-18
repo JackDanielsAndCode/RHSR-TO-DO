@@ -4,6 +4,9 @@ riot.tag('delete-check', '<div> <p>{opts.message}<p> <button onclick="{ opts.yes
 });
 
 riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ edit }"> <button __disabled="{ !text }">Add</button> </form>', function(opts) {
+
+        this.name=opts.name;
+        console.log(this.name);
         this.disabled = true
 
         this.edit = function(e) {
@@ -13,7 +16,9 @@ riot.tag('new-task', '<form onsubmit="{ add }"> <input name="input" onkeyup="{ e
         this.add = function(e) {
             if (this.text) {
                 var taskObj = {
-                    task: this.text
+                    task: this.text,
+                    createdBy: this.name,
+                    lasteditedBy: this.name
                 }
                 opts.socket.emit("create-task", taskObj);
                 this.text = this.input.value = ''
@@ -28,7 +33,7 @@ riot.tag('task-list', '<task each="{el in opts.items}" item="{ el }" ></task>', 
   
 });
 
-riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p hide="{ editable }" class="{ strike-through:opts.item.complete }">{ opts.item.task }</p> <input name="taskEdit" onchange="{ editing }" onkeyup="{ editing }" type="text" show="{ editable }" value="{ tempValue }"> <button onclick="{ toggleEditable }" hide="{ editable }" >edit</button> <button onclick="{ toggleEditable }" show="{ editable }" >done</button> <button onclick="{ toggleDeletable }" hide="{ deletable }" >X</button> <div show="{ deletable }"> <p>{ deleteMessage }<p> <button onclick="{ deleteTask }">yes</button> <button onclick="{ toggleDeletable }" >no</button> <div> </label> </div>', function(opts) {
+riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox" __checked="{ opts.item.complete }" onclick="{ toggle }"> <p hide="{ editable }" class="{ strike-through:opts.item.complete }">{ opts.item.createdBy + ": " + opts.item.task }</p> <input name="taskEdit" onchange="{ editing }" onkeyup="{ editing }" type="text" show="{ editable }" value="{ tempValue }"> <button onclick="{ toggleEditable }" hide="{ editable }" >edit</button> <button onclick="{ toggleEditable }" show="{ editable }" >done</button> <button onclick="{ toggleDeletable }" hide="{ deletable }" >X</button> <div show="{ deletable }"> <p>{ deleteMessage }<p> <button onclick="{ deleteTask }">yes</button> <button onclick="{ toggleDeletable }" >no</button> <div> </label> </div>', function(opts) {
     var socket = this.parent.socket;
     var date = new Date(Number(opts.item.time));
     this.deleteMessage="Are you sure you want to delete this task created on: " + date;
@@ -82,22 +87,48 @@ riot.tag('task', '<div class="{task-flash:true}"> <label> <input type="checkbox"
     
 });
 
-riot.tag('to-do', '<new-task socket="{ socket }"></new-task> <h1>Your Tasks</h1> <task-list items="{ taskItems }" socket="{ socket }"></task-list>', function(opts) {
+riot.tag('to-do', '<user-list users="{ users }"></user-list> <h1>Realtime To Do App</h1> <new-task socket="{ socket }" name="{ name }"></new-task> <h2>Your Tasks</h2> <task-list items="{ taskItems }" socket="{ socket }" name="{ name }"></task-list>', function(opts) {
+
+        function getCookieByname (name) {
+            if (!name) { return null; }
+            return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(name).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+        }
+
+        function getName () {
+
+            var name = getCookieByname("realtimetodoname");
+            if(!name) {
+                name = window.prompt("What is your name/handle?");
+                window.document.cookie='realtimetodoname='+name;
+            }
+            socket.emit('new-user', name);
+            return name;
+        }
+
+        function initialTaskUpdate (callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/getTasksAndUsers');
+            xhr.send();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    todo.taskItems = JSON.parse(xhr.responseText);
+                    callback();
+                }
+            };
+        }
+
         this.taskItems = [];
+        this.users= [];
         var socket = this.socket = io();
         var todo = this;
+        this.name = getName();
 
         this.on('mount', function(){
-          var xhr = new XMLHttpRequest();
-          xhr.open('GET', '/getTasks');
-          xhr.send();
-          xhr.onreadystatechange = function() {
-              if (xhr.readyState === 4) {
-                  todo.taskItems = JSON.parse(xhr.responseText);
-                  todo.update()
-              }
-          };
+            initialTaskUpdate( function () {
+                todo.update();
+            })
         });
+
 
 
         socket.on("task-updated", function (unparsedObj) {

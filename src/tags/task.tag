@@ -2,7 +2,7 @@
     <div class={task-flash:true}>
         <label>
             <input type='checkbox' checked={ opts.item.complete } onclick={ toggle } />
-            <p hide={ editable } class={ strike-through:opts.item.complete }>{ opts.item.task }</p>
+            <p hide={ editable } class={ strike-through:opts.item.complete }>{ opts.item.createdBy + ": " + opts.item.task }</p>
             <input name="taskEdit" onchange={ editing } onkeyup={ editing } type='text' show={ editable } value={ tempValue } />
             <button onclick={ toggleEditable  } hide={ editable } >edit</button>
             <button onclick={ toggleEditable } show={ editable } >done</button>

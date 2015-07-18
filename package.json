@@ -1,7 +1,7 @@
 {
-  "name": "redis-riot-reading",
+  "name": "RHSR-TO-DO",
   "version": "1.0.0",
-  "description": "Day of exploring!",
+  "description": "Real time to do app",
   "main": "api/server.js",
   "scripts": {
     "test": "tape test/**/*.test.js",
