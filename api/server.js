@@ -1,5 +1,4 @@
 var Hapi    = require('hapi');
-var handlebars = require('handlebars');
 var server  = new Hapi.Server();
 var init = require('./init.js');
 
