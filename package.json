@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/jrans/RHSR-TO-DO#readme",
   "dependencies": {
-    "handlebars": "^3.0.3",
     "hapi": "^8.8.0",
     "hiredis": "^0.4.0",
     "redis": "^0.12.1",
