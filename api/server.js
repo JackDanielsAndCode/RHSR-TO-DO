@@ -9,14 +9,6 @@ var serverOptions = {
 
 server.connection(serverOptions);
 
-server.views({
-    engines: {
-        html: handlebars
-    },
-    relativeTo: __dirname,
-    path: '../public/views'
-});
-
 server.route(require('./routes.js'));
 
 server.start(function(){
