@@ -8,10 +8,10 @@
             <button onclick={ toggleEditable } show={ editable } >done</button>
             <button onclick={ toggleDeletable } hide={ deletable } >X</button>
             <div show={ deletable }>
-                <p>{ deleteMessage }<p>
+                <p>{ deleteMessage }</p>
                 <button onclick={ deleteTask }>yes</button>
                 <button onclick={ toggleDeletable } >no</button>
-            <div>
+            </div>
         </label>
     </div>
     <script>
